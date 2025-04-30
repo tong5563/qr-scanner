@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Code Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 20px; }
+    #reader { width: 300px; margin: auto; }
+    .card { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-top: 20px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <h2>📷 Scan QR Code or Barcode</h2>
+  <div id="reader"></div>
+  <div id="result"></div>
+
+  <script>
+    const html5QrCode = new Html5Qrcode("reader");
+    const apiUrl = "https://script.google.com/macros/s/AKfycbzvxrrFf0ZqPI3WH-rvs1jfFurkY78txY9Hqk21wfFXyP3mIMm7guDcBN4LIH-OENDs/exec";
+
+    function showResult(qrCode) {
+      document.getElementById('result').innerHTML = `<div><b>Scanned:</b> ${qrCode}</div>`;
+      fetch(`${apiUrl}?qr=${encodeURIComponent(qrCode)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            document.getElementById('result').innerHTML += `<div style="color:red;"><b>${data.error}</b></div>`;
+          } else {
+            document.getElementById('result').innerHTML += `
+              <div class="card">
+                <b>✅ Match Found!</b><br>
+                <b>Name:</b> ${data.productName}<br>
+                <b>Tel:</b> ${data.details}<br>
+                <b>Address:</b> ${data.extraInfo}
+              </div>`;
+          }
+        });
+    }
+
+    html5QrCode.start(
+      { facingMode: "environment" },
+      {
+        fps: 10,
+        qrbox: 250,
+        supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+        formatsToSupport: [
+          Html5QrcodeSupportedFormats.QR_CODE,
+          Html5QrcodeSupportedFormats.CODE_128,
+          Html5QrcodeSupportedFormats.EAN_13
+        ]
+      },
+      decodedText => {
+        html5QrCode.stop().then(() => {
+          showResult(decodedText);
+          setTimeout(() => html5QrCode.start(...arguments), 2000);
+        });
+      }
+    ).catch(err => {
+      document.getElementById('result').innerHTML = `<div style="color:red;">Camera error: ${err}</div>`;
+    });
+  </script>
+</body>
+</html>
+
