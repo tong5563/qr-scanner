@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>QR Code Scanner</title>
+  <title>二维码扫描</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body {
@@ -37,7 +37,7 @@
   </style>
 </head>
 <body>
-  <h2>📷 QR & Barcode Scanner</h2>
+  <h2>📷二维码扫描器</h2>
   <div id="reader"></div>
 
   <!-- Flashlight buttons -->
@@ -72,9 +72,9 @@
             document.getElementById('result').innerHTML += `
               <div class="card">
                 <b>✅ Match Found</b><br><br>
-                <b>Name:</b> ${data.productName || 'N/A'}<br>
-                <b>Tel:</b> ${data.details || 'N/A'}<br>
-                <b>Adds:</b> ${data.extraInfo || 'N/A'}
+                <b>名字:</b> ${data.productName || 'N/A'}<br>
+                <b>联系:</b> ${data.details || 'N/A'}<br>
+                <b>地址:</b> ${data.extraInfo || 'N/A'}
               </div>`;
           }
         }).catch(err => {
